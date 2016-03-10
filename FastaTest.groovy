@@ -1,13 +1,14 @@
-def uniprots = ['P68871','P68874']
+def uniprots = ['P68871', 'P01958']
+def fastas = []
 uniprots.each {
     def fastaObject = new Fasta(it)
     assert fastaObject.identifier == it
-    println fastaObject.setDataFromUniprot(it)
+    fastaObject.setDataFromUniprot(it)
+    fastaObject.parseData()
+//    println fastaObject.sequence
+    fastas.push(fastaObject)
 }
 
-def ebis = ['BN000065','A10909']
-ebis.each {
-    def fastaObject = new Fasta(it)
-    assert fastaObject.identifier == it
-    println fastaObject.setDataFromEbi(it)
-}
+fastaCalc = new Fasta()
+def score = fastaCalc.NWScore fastas[0].sequence, fastas[1].sequence
+println score
