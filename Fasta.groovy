@@ -182,4 +182,16 @@ class Fasta {
     def NWIns(x, i) {
         return -2
     }
+
+    /**
+     * Generates the optimal sequence alignment between 2 strings
+     *
+     * @param x
+     * @param y
+     *
+     * return {String}
+     */
+    def Hirschberg(x, y) {
+        //TODO
+    }
 }
