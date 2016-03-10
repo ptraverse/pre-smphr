@@ -69,10 +69,11 @@ class Fasta {
     }
 
     /**
-     * NWScore which calculates the matrix of Needleman Wunsch Algorithm
-     *
-     * {NWScore}(X,Y), which returns the last line of the Needleman-Wunsch score matrix {Score}(i,j):
+     * NWScore which calculates the matrix of Needleman Wunsch Algorithm between 2 strings
+     * and returns the last line of that matrix
      * https://en.wikipedia.org/wiki/Hirschberg%27s_algorithm
+     *
+     * -- PseudoCode --
      function NWScore(X,Y)
         Score(0,0) = 0
         for j=1 to length(Y)
@@ -89,43 +90,66 @@ class Fasta {
         for j=0 to length(Y)
             LastLine(j) = Score(length(X),j)
         return LastLine
+     *
+     * @param {String} x
+     * @param {String} y
+     *
+     * @return list
      */
     def NWScore(x, y) {
         def score = []
-        score[0] = []
-        score[0][0] = 0
-        def lastLine
-        y.length().times { j ->
-            if (j == 0) { continue }
-            score[0][j] = score[0][j - 1] + NWIns(y, j)
-        }
-        x.length().times { i ->
-            if (i == 0) { continue }
+        def lastLine = []
+        def i = 0 //TODO There must be a better way to get the iterator on the each in Groovy but this works for now
+        x.each { xLetter ->
             score[i] = []
-            score[i][0] = score[i - 1][0] + NWDel(x, i)
-            y.length().times { j ->
-                println i + ' - ' + j
+            def j = 0
+            y.each { yLetter ->
+                score[i][j] = 0
+                j++
+            }
+            i++
+        }
+
+        def j = 1
+        while (j < y.length()) {
+            score[0][j] = score[0][j-1] + NWIns(y, j)
+            j++
+        }
+
+        i = 1
+        while (i < x.length()) {
+            score[i][0] = score[i-1][0] + NWDel(x, i)
+            j = 1
+            while (j < y.length()) {
                 def scoreSub = score[i - 1][j - 1] + NWSub(x, i, y, j)
                 def scoreDel = score[i - 1][j] + NWDel(x, i)
-                def scoreIns = score[i][j - 1] +  NWIns(y, j)
+                def scoreIns = score[i][j - 1] + NWIns(y, j)
                 def scores = [scoreSub, scoreDel, scoreIns]
                 score[i][j] = scores.max { it.value }.value
+                j++
             }
+            i++
         }
-        y.length().times { j ->
-            lastLine[j] = score[x.length()][j]
+
+        j = 0
+        while (j < y.length()) {
+            println score[x.length() - 1][j]
+            lastLine[j] = score[x.length() - 1][j]
+            j++
         }
 
         lastLine
     }
 
     /**
+     * Get a score for substitution
      * TODO - Could optimize this based on degree of similarity of AA's?
      * @param x
      * @param i
      * @param y
      * @param j
-     * @return
+     *
+     * @return int
      */
     def NWSub(x, i, y, j) {
         if (x.charAt(i) == y.charAt(j)) {
@@ -136,20 +160,24 @@ class Fasta {
     }
 
     /**
+     * Get a score for deletion
      *
      * @param x
      * @param i
-     * @return
+     *
+     * @return int
      */
     def NWDel(x, i) {
         return -2
     }
 
     /**
+     * Get a score for insertion
      *
      * @param x
      * @param i
-     * @return
+     *
+     * @return int
      */
     def NWIns(x, i) {
         return -2
