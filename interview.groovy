@@ -22,42 +22,29 @@
 // Define a set of test cases for your code, thinking through possible edge cases.
 
 class Node {
+
     Node parent
 
-    def getParent() {
-        return this.parent
-    }
-
-    def getRoot() {
-        if (this.parent == null) { //root
-            return this
-        } else {
-            return this.parent.getRoot()
-        }
-    }
-
     def setParent(parentNode) {
-        if (parentNode == this) { //cycle
-            throw new Exception('')
+        //check if parentNode.parent is self -> loop
+        if (parentNode == this) {
+            throw new Exception('cycle 1')
         }
-
-        if (parentNode == null) { //root
-            this.parent = null
-        } else {
-            def visited = []
-            println parentNode
-            while (parentNode.getRoot() != null) {
-                println parentNode.getRoot()
-                visited.push(parentNode.getParent())
-                println visited
-                if (visited.contains(this)) {
-                    throw new Exception('')
-                }
-            }
+        // then travel up the chain of parents until you either find null (root) or self (cycle)
+        // if you get to null then good if you get to self then bad
+        def visited = [parentNode]
+        while (!visited.contains(null) && !visited.contains(this)) {
+            visited << visited[visited.size - 1].parent
+        }
+        if (visited.contains(null)) {
+            //we got to the root, OK
             this.parent = parentNode
+        } else if (visited.contains(this)) {
+            //we found a cycle, not OK
+            throw new Exception('cycle 2')
         }
 
-        return this
+        this
     }
 
 }
@@ -68,7 +55,12 @@ def c = new Node(parent:b)
 def d = new Node(parent:b)
 
 //should fail because it would create a cycle
-a.setParent(c)
+try {
+    a.setParent(c)
+} catch (all) {
+    println 'this one failed'
+}
 
 //should succeed
 c.setParent(a)
+println c
