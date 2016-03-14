@@ -186,12 +186,79 @@ class Fasta {
     /**
      * Generates the optimal sequence alignment between 2 strings
      *
+     function Hirschberg(X,Y)
+        Z = ""
+        W = ""
+        if length(X) == 0
+            for i=1 to length(Y)
+                Z = Z + '-'
+                W = W + Yi
+            end
+        else if length(Y) == 0
+            for i=1 to length(X)
+                 Z = Z + Xi
+                 W = W + '-'
+            end
+        else if length(X) == 1 or length(Y) == 1
+            (Z,W) = NeedlemanWunsch(X,Y)
+        else
+             xlen = length(X)
+             xmid = length(X)/2
+             ylen = length(Y)
+
+             ScoreL = NWScore(X1:xmid, Y)
+             ScoreR = NWScore(rev(Xxmid+1:xlen), rev(Y))
+             ymid = PartitionY(ScoreL, ScoreR)
+
+            (Z,W) = Hirschberg(X1:xmid, y1:ymid) + Hirschberg(Xxmid+1:xlen, Yymid+1:ylen)
+        end
+        return (Z,W)
+     *
      * @param x
      * @param y
+     * TODO Fniish the Neeldman Wunsch
      *
      * return {String}
      */
     def Hirschberg(x, y) {
-        //TODO
+        def Z
+        def W
+        if (x.length() == 0) {
+            y.eachWithIndex { val, index ->
+                Z += '-'
+                W += W + val
+            }
+        } else if (y.length() == 0) {
+            x.eachWithIndex { val, index ->
+                Z = Z + val
+                W = W + '-'
+            }
+        } else if (x.length() == 1 || y.length() == 1) {
+//            return NeedlemanWunsch(x, y)
+        } else {
+            def xMid = x.length()/2
+
+            def scoreL = NWScore(x[0..xMid-1], y)
+            def scoreR = NWScore(x[xMid..x.length()].reverse(), y.reverse())
+            def yMid = partitionY(scoreL, scoreR)
+
+//          return Hirschberg(x[0..xMid-1],y[0..yMid-1]) + Hirschberg(x[xMid..x.length()], y[yMid..y.length()])
+        }
+//      return [Z, W]
+    }
+
+    def partitionY(scoreL, scoreR) {
+        return max( [argMax(scoreL), argMax(scoreR.reverse())] )
+    }
+
+    def argMax(items) {
+        def maxVal = ''
+        def maxIndex = 0
+        items.eachWithIndex { val, index ->
+            if (val > maxVal) { maxVal = val }
+            if (index > maxIndex) { maxIndex = index }
+        }
+
+        maxIndex
     }
 }

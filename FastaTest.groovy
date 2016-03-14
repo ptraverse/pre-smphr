@@ -9,6 +9,12 @@ uniprots.each {
     fastas.push(fastaObject)
 }
 
-fastaCalc = new Fasta()
-def score = fastaCalc.NWScore fastas[0].sequence, fastas[1].sequence
-println score
+//fastaCalc = new Fasta()
+//def score = fastaCalc.NWScore fastas[0].sequence, fastas[1].sequence
+//println score
+
+def fastaObject = new Fasta()
+def x = 'AGTACGCA'
+def y = 'TATGC'
+println fastaObject.Hirschberg(x, y)
+

@@ -28,20 +28,20 @@ class Node {
     def setParent(parentNode) {
         //check if parentNode.parent is self -> loop
         if (parentNode == this) {
-            throw new Exception('cycle 1')
+            throw new Exception('cycleException of selfloop')
         }
         // then travel up the chain of parents until you either find null (root) or self (cycle)
         // if you get to null then good if you get to self then bad
         def visited = [parentNode]
         while (!visited.contains(null) && !visited.contains(this)) {
-            visited << visited[visited.size - 1].parent
+            visited << visited.last().parent
         }
         if (visited.contains(null)) {
             //we got to the root, OK
             this.parent = parentNode
         } else if (visited.contains(this)) {
             //we found a cycle, not OK
-            throw new Exception('cycle 2')
+            throw new Exception('cycleException of length ' + visited.size)
         }
 
         this
@@ -57,10 +57,23 @@ def d = new Node(parent:b)
 //should fail because it would create a cycle
 try {
     a.setParent(c)
+    println 'success 1'
 } catch (all) {
-    println 'this one failed'
+    println 'Fail: ' + all
 }
 
 //should succeed
-c.setParent(a)
-println c
+try {
+    c.setParent(a)
+    println 'success 2'
+} catch (all) {
+    println 'Fail: ' + all
+}
+
+//More Test Cases
+try {
+    b.setParent(b) //self-loop
+    println 'success 3'
+} catch (all) {
+    println 'Fail: ' + all
+}

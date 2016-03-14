@@ -47,20 +47,52 @@
 //technologies.eachWithIndex { it, i -> println "$i: $it"}
 //
 
-//2D Arrays
+/*
+ * 2D Arrays
+ */
+//
+//def x = 'superman'
+//def y = 'ubermensch'
+//def matrix = []
+//println matrix
+//x.each { i ->
+//    matrix.push([i])
+//}
+//println matrix
+//
+//x.each {
+//    println it
+//}
+//fastaObj = new Fasta();
+//def result = fastaObj.NWScore x, y
+//println result
 
-def x = 'superman'
-def y = 'ubermensch'
-def matrix = []
-println matrix
-x.each { i ->
-    matrix.push([i])
+//def range = 1..10
+//println range
+
+/**
+ * Each() vs EachWithIndex()
+ */
+println 'each: '
+def foo = ['foo', 'bar', 'baz', 'blueberry']
+foo.each { value ->
+    println value
 }
-println matrix
 
-x.each {
+println 'eachWithIndex: '
+foo.eachWithIndex { value, index ->
+    println value
+    println index
+}
+//
+//foo.each {
+//    println it
+//}
+println '-------'
+
+(foo[1..2]).each {
     println it
 }
-fastaObj = new Fasta();
-def result = fastaObj.NWScore x, y
-println result
+
+def testString = 'superduper'
+println testString.reverse()
