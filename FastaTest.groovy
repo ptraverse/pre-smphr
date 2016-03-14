@@ -1,20 +1,27 @@
-def uniprots = ['P68871', 'P01958']
 def fastas = []
-uniprots.each {
+
+// SWISS-PROT
+def sps = ['P68871', 'P01958']
+sps.each {
     def fastaObject = new Fasta(it)
     assert fastaObject.identifier == it
-    fastaObject.setDataFromUniprot(it)
+    fastaObject.setDataSp(it)
     fastaObject.parseData()
-//    println fastaObject.sequence
+    assert fastaObject.data > ''
     fastas.push(fastaObject)
 }
 
-//fastaCalc = new Fasta()
-//def score = fastaCalc.NWScore fastas[0].sequence, fastas[1].sequence
-//println score
+// Genbank
+def gbs = ['BN000065']
+gbs.each {
+    def fastaObject = new Fasta(it)
+    assert fastaObject.identifier == it
+    fastaObject.setDataGb(it)
+    fastaObject.parseData()
+    assert fastaObject.data > ''
+}
 
-def fastaObject = new Fasta()
-def x = 'AGTACGCA'
-def y = 'TATGC'
-println fastaObject.Hirschberg(x, y)
+fastaCalc = new Fasta()
+def score = fastaCalc.NWScore fastas[0].sequence, fastas[1].sequence
+assert score > 0
 

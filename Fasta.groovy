@@ -12,6 +12,7 @@ class Fasta {
      * Constructor
      * TODO figure out which data source to use based on sequence identifier
      * TODO https://en.wikipedia.org/wiki/FASTA_format#Sequence_identifiers
+     * TODO e.g ">ENA|BN000065|BN000065.1 TPA: Homo sapiens SMP1 gene, RHD gene and RHCE gene"
      *
      * @param {String} identifier
      */
@@ -19,15 +20,81 @@ class Fasta {
         this.identifier = identifier
     }
 
-
     /**
-     * Fetches the FASTA file from uniprot.org for a given sequence identifier
+     * Genbank
+     * gb|accession|locus
+     * http://adina-howe.readthedocs.org/en/latest/ncbi/
      *
-     * @param {String} identifier
+     * @param {String} accession
      *
      * @return this
      */
-    def setDataFromUniprot(identifier) {
+    def setDataGb(accession) {
+        def url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=' + accession + '&rettype=fasta&retmode=text'
+        def data = new URL(url).getText()
+        this.data = data
+
+        this
+    }
+
+    /**
+     * EMB => Same as ENA
+     * emb|accession|locus
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataEmb(accession) {
+        this.setDataEna(accession)
+    }
+
+    /**
+     * DBJ - DNA DB of Japan
+     * dbj|accession|locus
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataDbj(accession) {
+        throw new Exception("not yet implemented")
+    }
+
+    /**
+     * Georgetown Protein Information Resource
+     * pir||entry
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataPir(pir, entry) {
+        throw new Exception("not yet implemented")
+    }
+
+    /**
+     * Protein Research Foundation
+     * prf||name
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataPrf(name) {
+        throw new Exception("not yet implemented")
+    }
+
+
+    /**
+     * SWISS-PROT
+     * sp|accession|entry name
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataSp(accession) {
         def url = 'http://www.uniprot.org/uniprot/' + identifier + '.fasta'
         def data = new URL(url).getText()
         this.data = data
@@ -37,13 +104,88 @@ class Fasta {
 
 
     /**
-    * Fetches the FASTA file from EBI for a given sequence identifier
+     * Brookhaven Protein Data Bank
+     * pdb|entry|chain
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataPdb(entry, chain) {
+        throw new Exception("not yet implemented")
+    }
+
+    /**
+     * Patents
+     * pat|country|number
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataPat(country, number) {
+        throw new Exception("not yet implemented")
+    }
+
+    /**
+     * GenInfo Backbone Id
+     * bbs|number
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataBbs(number) {
+        throw new Exception("not yet implemented")
+    }
+
+    /**
+     * General database identifier
+     * gnl|database|identifier
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataGnl(database, indentifier) {
+        throw new Exception("not yet implemented")
+    }
+
+    /**
+     * NCBI Reference Sequence
+     * ref|accession|locus
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataRef(accession, locus) {
+        throw new Exception("not yet implemented")
+    }
+
+    /**
+     * Local Sequence identifier
+     * lcl|identifier
+     *
+     * @param {String} accession
+     *
+     * @return this
+     */
+    def setDataLcl(identifier) {
+        throw new Exception("not yet implemented")
+    }
+
+
+    /**
+     * Fetches the FASTA file from EBI for a given sequence identifier
+     * ENA European Nucleotide Archive
+     * ena|accession|entry name
      *
      * @param {String} identifier
      *
      * @return this
     */
-    def setDataFromEbi(identifier) {
+    def setDataEna(identifier) {
         def url = 'https://www.ebi.ac.uk/ena/data/view/' + identifier + '&display=fasta&download=fasta&filename=' + identifier + '.fasta'
         def data = new URL(url).getText()
         this.data = data
@@ -53,6 +195,8 @@ class Fasta {
 
     /**
      * Helper for constructor to parse data and split off first descriptor line and remove /n from sequence
+     *
+     * TODO - Remove this
      *
      * @return this
      */
@@ -99,7 +243,7 @@ class Fasta {
     def NWScore(x, y) {
         def score = []
         def lastLine = []
-        def i = 0 //TODO There must be a better way to get the iterator on the each in Groovy but this works for now
+        def i = 0 //TODO Change this to use eachWithIndex
         x.each { xLetter ->
             score[i] = []
             def j = 0
@@ -133,7 +277,6 @@ class Fasta {
 
         j = 0
         while (j < y.length()) {
-            println score[x.length() - 1][j]
             lastLine[j] = score[x.length() - 1][j]
             j++
         }
